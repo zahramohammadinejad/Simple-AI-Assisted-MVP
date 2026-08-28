@@ -1,5 +1,5 @@
 // Public Supabase client configuration.
-// The publishable/anon key is safe for browser use only when RLS is correctly configured.
+// The publishable key may be exposed in browser code. Database protection is enforced by RLS.
 const SUPABASE_URL = 'https://bvsyjqjgmnuerlmawzme.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_bpm_BmUwxJio8P5HDjq-YA_ur4nJCXP';
 
@@ -34,11 +34,10 @@ document.getElementById('auth-form').addEventListener('submit', async (event) =>
 
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
-
   const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
   if (error) {
-    authMessage.textContent = error.message;
+    authMessage.textContent = 'Login failed. Check your email and password.';
     return;
   }
 
@@ -60,7 +59,7 @@ document.getElementById('signup-btn').addEventListener('click', async () => {
   const { error } = await supabaseClient.auth.signUp({ email, password });
 
   if (error) {
-    authMessage.textContent = error.message;
+    authMessage.textContent = 'Could not create the account.';
     return;
   }
 
@@ -77,9 +76,9 @@ document.getElementById('request-form').addEventListener('submit', async (event)
   requestMessage.textContent = 'Submitting...';
   result.classList.add('hidden');
 
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  if (!user) {
-    requestMessage.textContent = 'Please log in again.';
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session?.user) {
+    requestMessage.textContent = 'Your session has expired. Please log in again.';
     showAuth();
     return;
   }
@@ -87,24 +86,25 @@ document.getElementById('request-form').addEventListener('submit', async (event)
   const requesterName = document.getElementById('requester-name').value.trim();
   const description = document.getElementById('request-description').value.trim();
 
-  const { data, error } = await supabaseClient
-    .from('requests')
-    .insert({
-      user_id: user.id,
-      requester_name: requesterName,
-      requester_email: user.email,
-      request_description: description
-    })
-    .select()
-    .single();
-
-  if (error) {
-    requestMessage.textContent = error.message;
+  if (!requesterName || requesterName.length > 100 || !description || description.length > 5000) {
+    requestMessage.textContent = 'Please check the form fields and their length.';
     return;
   }
 
-  requestMessage.textContent = 'Request saved.';
-  result.innerHTML = `<strong>Request ID:</strong> ${data.id}<br><strong>Status:</strong> ${data.status}`;
+  const { data, error } = await supabaseClient.functions.invoke('create-request', {
+    body: {
+      requester_name: requesterName,
+      request_description: description
+    }
+  });
+
+  if (error || !data?.request) {
+    requestMessage.textContent = 'Could not submit the request.';
+    return;
+  }
+
+  requestMessage.textContent = 'Request saved securely.';
+  result.textContent = `Request ID: ${data.request.id} | Status: ${data.request.status}`;
   result.classList.remove('hidden');
   event.target.reset();
 });
