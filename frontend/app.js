@@ -1,5 +1,7 @@
-const SUPABASE_URL = 'PASTE_YOUR_SUPABASE_URL_HERE';
-const SUPABASE_ANON_KEY = 'PASTE_YOUR_SUPABASE_ANON_KEY_HERE';
+// Public Supabase client configuration.
+// The publishable/anon key is safe for browser use only when RLS is correctly configured.
+const SUPABASE_URL = 'https://bvsyjqjgmnuerlmawzme.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_bpm_BmUwxJio8P5HDjq-YA_ur4nJCXP';
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
