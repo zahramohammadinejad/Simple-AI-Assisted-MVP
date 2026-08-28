@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Employee Request</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://*.supabase.co; style-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
+  <link rel="stylesheet" href="frontend/style.css">
+</head>
+<body>
+  <main class="container">
+    <section class="card" id="auth-card">
+      <h1>Smart Employee Request</h1>
+      <p class="subtitle">Phase 1 — AI-Assisted MVP</p>
+      <form id="auth-form">
+        <label for="email">Email</label>
+        <input id="email" type="email" required autocomplete="email">
+        <label for="password">Password</label>
+        <input id="password" type="password" required minlength="6" autocomplete="current-password">
+        <div class="actions">
+          <button type="submit">Log in</button>
+          <button type="button" class="secondary" id="signup-btn">Create account</button>
+        </div>
+      </form>
+      <p id="auth-message" class="message"></p>
+    </section>
+
+    <section class="card hidden" id="app-card">
+      <div class="header-row">
+        <div>
+          <h1>Employee Request</h1>
+          <p id="user-email" class="subtitle"></p>
+        </div>
+        <button type="button" class="secondary" id="logout-btn">Log out</button>
+      </div>
+      <form id="request-form">
+        <label for="requester-name">Your name</label>
+        <input id="requester-name" maxlength="100" required autocomplete="name">
+        <label for="request-description">Describe your request</label>
+        <textarea id="request-description" maxlength="5000" rows="6" required placeholder="Example: I need a second monitor for my new project."></textarea>
+        <button type="submit">Submit request</button>
+      </form>
+      <p id="request-message" class="message"></p>
+      <div id="result" class="result hidden"></div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="frontend/app.js"></script>
+</body>
+</html>
