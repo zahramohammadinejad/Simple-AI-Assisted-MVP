@@ -56,14 +56,21 @@ document.getElementById('signup-btn').addEventListener('click', async () => {
     return;
   }
 
-  const { error } = await supabaseClient.auth.signUp({ email, password });
+  // Use the current application URL for email confirmation.
+  // This must be present in Supabase Auth > URL Configuration > Redirect URLs.
+  const emailRedirectTo = window.location.origin + window.location.pathname;
+  const { error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo }
+  });
 
   if (error) {
     authMessage.textContent = 'Could not create the account.';
     return;
   }
 
-  authMessage.textContent = 'Account created. Check your email if confirmation is enabled.';
+  authMessage.textContent = 'Account created. Check your email and click the confirmation link.';
 });
 
 document.getElementById('logout-btn').addEventListener('click', async () => {
