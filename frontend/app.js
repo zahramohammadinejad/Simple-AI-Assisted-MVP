@@ -45,34 +45,6 @@ document.getElementById('auth-form').addEventListener('submit', async (event) =>
   await refreshSession();
 });
 
-document.getElementById('signup-btn').addEventListener('click', async () => {
-  authMessage.textContent = 'Creating account...';
-
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-
-  if (!email || password.length < 6) {
-    authMessage.textContent = 'Enter a valid email and a password of at least 6 characters.';
-    return;
-  }
-
-  // Use the current application URL for email confirmation.
-  // This must be present in Supabase Auth > URL Configuration > Redirect URLs.
-  const emailRedirectTo = window.location.origin + window.location.pathname;
-  const { error } = await supabaseClient.auth.signUp({
-    email,
-    password,
-    options: { emailRedirectTo }
-  });
-
-  if (error) {
-    authMessage.textContent = 'Could not create the account.';
-    return;
-  }
-
-  authMessage.textContent = 'Account created. Check your email and click the confirmation link.';
-});
-
 document.getElementById('logout-btn').addEventListener('click', async () => {
   await supabaseClient.auth.signOut();
   showAuth();
