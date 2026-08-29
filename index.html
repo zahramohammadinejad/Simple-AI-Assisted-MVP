@@ -3,44 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Employee Request</title>
+  <title>SmartRequest — Employee Request Automation</title>
+  <meta name="description" content="SmartRequest — secure AI-assisted employee request management.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://*.supabase.co; style-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
   <link rel="stylesheet" href="frontend/style.css">
 </head>
 <body>
   <main class="container">
     <section class="card" id="auth-card">
-      <h1>Smart Employee Request</h1>
-      <p class="subtitle">Phase 1 — AI-Assisted MVP</p>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span></div>
+        <div><strong>Smart<span>Request</span></strong><small>Employee Request Automation</small></div>
+      </div>
+
+      <div class="hero-copy">
+        <div class="eyebrow">SMART • SECURE • AI-ASSISTED</div>
+        <h1>Make employee requests <em>simple.</em></h1>
+        <p class="subtitle">Submit a request in seconds. SmartRequest keeps it organized and prepares it for the right workflow.</p>
+      </div>
+
+      <div class="feature-strip" aria-label="Product features">
+        <div><b>01</b><span>Easy to submit</span></div>
+        <div><b>02</b><span>Secure by design</span></div>
+        <div><b>03</b><span>Ready for AI</span></div>
+      </div>
+
+      <div class="auth-heading">
+        <h2>Welcome back</h2>
+        <p>Sign in to continue to your requests.</p>
+      </div>
+
       <form id="auth-form">
-        <label for="email">Email</label>
-        <input id="email" type="email" required autocomplete="email">
+        <label for="email">Email address</label>
+        <input id="email" type="email" required autocomplete="email" placeholder="you@company.com">
+
         <label for="password">Password</label>
-        <input id="password" type="password" required minlength="6" autocomplete="current-password">
+        <input id="password" type="password" required minlength="6" autocomplete="current-password" placeholder="Enter your password">
+
         <div class="actions">
           <button type="submit">Log in</button>
           <button type="button" class="secondary" id="signup-btn">Create account</button>
         </div>
       </form>
-      <p id="auth-message" class="message"></p>
+      <p id="auth-message" class="message" aria-live="polite"></p>
+      <p class="security-note"><span aria-hidden="true">◆</span> Your account and requests are protected by Supabase Authentication and Row Level Security.</p>
     </section>
 
     <section class="card hidden" id="app-card">
+      <div class="brand compact">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span></div>
+        <div><strong>Smart<span>Request</span></strong><small>Employee Request Automation</small></div>
+      </div>
+
       <div class="header-row">
         <div>
-          <h1>Employee Request</h1>
+          <div class="eyebrow">EMPLOYEE PORTAL</div>
+          <h1>Create a request</h1>
           <p id="user-email" class="subtitle"></p>
         </div>
         <button type="button" class="secondary" id="logout-btn">Log out</button>
       </div>
+
+      <div class="process-card">
+        <div><b>01</b><span>Submit</span></div>
+        <div><b>02</b><span>AI analysis</span></div>
+        <div><b>03</b><span>Routing</span></div>
+      </div>
+
       <form id="request-form">
         <label for="requester-name">Your name</label>
-        <input id="requester-name" maxlength="100" required autocomplete="name">
+        <input id="requester-name" maxlength="100" required autocomplete="name" placeholder="Full name">
+
         <label for="request-description">Describe your request</label>
-        <textarea id="request-description" maxlength="5000" rows="6" required placeholder="Example: I need a second monitor for my new project."></textarea>
+        <textarea id="request-description" maxlength="5000" rows="6" required placeholder="Tell us what you need and why..."></textarea>
+        <div class="field-hint">Maximum 5,000 characters</div>
+
         <button type="submit">Submit request</button>
       </form>
-      <p id="request-message" class="message"></p>
+      <p id="request-message" class="message" aria-live="polite"></p>
       <div id="result" class="result hidden"></div>
     </section>
   </main>
