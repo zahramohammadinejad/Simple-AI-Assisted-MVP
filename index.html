@@ -6,7 +6,7 @@
   <title>SmartRequest — Employee Request Automation</title>
   <meta name="description" content="SmartRequest — secure AI-assisted employee request management.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://*.supabase.co; style-src 'self'; img-src 'self' data:; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
-  <link rel="stylesheet" href="frontend/style.css">
+  <link rel="stylesheet" href="frontend/style.css?v=2">
 </head>
 <body>
   <main class="container">
@@ -36,13 +36,9 @@
       <form id="auth-form">
         <label for="email">Email address</label>
         <input id="email" type="email" required autocomplete="username" placeholder="you@company.com">
-
         <label for="password">Password</label>
         <input id="password" type="password" required autocomplete="current-password" placeholder="Enter your password">
-
-        <div class="actions single-action">
-          <button type="submit">Log in securely</button>
-        </div>
+        <div class="actions single-action"><button type="submit">Log in securely</button></div>
       </form>
       <p id="auth-message" class="message" aria-live="polite"></p>
       <p class="security-note"><span aria-hidden="true">◆</span> Access is managed by your organization. Self-registration is disabled.</p>
@@ -72,11 +68,9 @@
       <form id="request-form">
         <label for="requester-name">Your name</label>
         <input id="requester-name" maxlength="100" required autocomplete="name" placeholder="Full name">
-
         <label for="request-description">Describe your request</label>
         <textarea id="request-description" maxlength="5000" rows="6" required placeholder="Tell us what you need and why..."></textarea>
         <div class="field-hint">Maximum 5,000 characters</div>
-
         <button type="submit">Submit request</button>
       </form>
       <p id="request-message" class="message" aria-live="polite"></p>
@@ -84,6 +78,6 @@
     </section>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="frontend/app.js"></script>
+  <script src="frontend/app.js?v=3"></script>
 </body>
 </html>
