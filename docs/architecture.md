@@ -1,47 +1,152 @@
-# Phase 1 — Architecture
+# System Architecture — AI-Assisted Employee Operations
 
-## Goal
+## 1. Purpose
 
-Build a small AI-assisted employee equipment request MVP without an automation platform or agent runtime.
+This project is no longer a simple "employee request + LLM classification" demo. It is a portfolio-grade reference architecture for an AI-assisted business process.
 
-## Architecture
+The system transforms an unstructured employee request into a structured, policy-aware and auditable workflow while keeping final business decisions under deterministic rules and human approval where required.
+
+## 2. Core principle
+
+> **AI understands. Policies inform. Rules decide. Automation executes. Humans control sensitive decisions.**
+
+The LLM is decision support, not the authorization layer.
+
+## 3. Target architecture
 
 ```text
 Employee
    |
    v
-GitHub Pages — Static Web UI
+Web Frontend
    |
-   | HTTPS
    v
-Supabase
-   +-- Auth
-   +-- PostgreSQL / requests
-   +-- Edge Function: analyze-request
-              |
-              | server-side API call
-              v
-          Gemini API
+Supabase Auth / JWT
+   |
+   v
+Supabase Edge Function
+   |
+   +--> Validate input
+   |
+   +--> Store request
+   |
+   +--> LLM: extract structured request
+   |        |
+   |        +--> confidence
+   |        +--> missing information
+   |        +--> risk indication
+   |
+   +--> Validate AI output
+   |
+   +--> Policy retrieval (Phase 4)
+   |
+   +--> Deterministic business rules
+   |
+   +--> Decision engine
+            |
+            +--> NEEDS_INFORMATION
+            +--> HUMAN_REVIEW
+            +--> AUTO_ROUTE
+
+Decision result
+   |
+   +--> Human approval (Phase 5)
+   |
+   +--> Make automation (Phase 6)
+   |
+   +--> OpenWorker agentic extension (Phase 7)
+   |
+   +--> Audit log / analytics
 ```
 
-## Responsibilities
+## 4. Component responsibilities
 
-- GitHub: source code, version control and portfolio visibility.
-- GitHub Pages: hosts the static frontend.
-- Supabase Auth: identifies the signed-in employee.
-- Supabase PostgreSQL: stores request data and AI analysis.
-- Supabase RLS: restricts users to their own request rows.
-- Supabase Edge Function: keeps the Gemini API key out of browser code and coordinates the AI request.
-- Gemini: classifies/extracts information from the employee request.
+| Component | Responsibility | Must not do |
+|---|---|---|
+| Frontend | Collect requests and display status | Enforce authorization by itself |
+| Supabase Auth | Identity and JWT | Decide business approval |
+| Edge Functions | Secure orchestration and server-side validation | Expose secrets |
+| LLM | Understand natural language and produce structured analysis | Grant access or final approval |
+| Policy/RAG | Retrieve organizational knowledge | Replace deterministic rules |
+| Rule engine | Apply explicit business policy | Interpret arbitrary natural language |
+| Decision engine | Combine validated facts and rules | Bypass authorization |
+| Human reviewer | Approve sensitive/uncertain cases | Change audit history |
+| Make | Execute repeatable workflow actions | Become the business brain |
+| OpenWorker | Handle multi-step reasoning/tool use | Bypass rules or RLS |
+| Supabase DB | Persist operational data and audit trail | Trust client-supplied identity |
 
-## Security boundary
+## 5. Decision boundary
 
-The browser may contain public Supabase client configuration, but must never contain the Gemini API key or Supabase service-role key.
+The most important architectural boundary is between **AI recommendation** and **system decision**.
 
-Private secrets belong on the server side, in the Supabase Edge Function environment.
+Example:
 
-## Future phases
+```text
+LLM:
+  recommendation = auto_route
+  confidence = 0.92
 
-- Phase 2: add OpenWorker as the Agent runtime.
-- Phase 3: add Make as workflow orchestration.
-- Phase 4: replace Make with self-hosted n8n for a client-deployable architecture.
+Business facts:
+  estimated_cost = 2500
+  risk = high
+
+Rules:
+  cost >= 2000 -> director approval
+  high risk -> human review
+
+Final decision:
+  HUMAN_REVIEW
+```
+
+The LLM cannot override the rule result.
+
+## 6. Security boundary
+
+The browser may contain the public Supabase URL and anonymous client key. It must never contain:
+
+- Gemini/OpenRouter API keys
+- Supabase service-role key
+- privileged database credentials
+
+Secrets stay server-side.
+
+RLS is the data-access boundary. Edge Functions are the server-side integration boundary.
+
+## 7. Evolution by phase
+
+### Phase 0
+Business/process design only.
+
+### Phase 1
+Secure core request management.
+
+### Phase 2
+LLM-assisted request understanding.
+
+### Phase 3
+Deterministic rules and decision engine.
+
+### Phase 4
+Policy knowledge base and RAG.
+
+### Phase 5
+Human approval workflow.
+
+### Phase 6
+Make orchestration.
+
+### Phase 7
+OpenWorker agentic extension.
+
+### Phase 8
+Reliability and security hardening.
+
+### Phase 9
+Process analytics.
+
+### Phase 10
+Portfolio packaging.
+
+## 8. Design rule
+
+Do not add a technology merely because it is fashionable. Every AI/automation component must solve a documented business problem and have a measurable purpose.
